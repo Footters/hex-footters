@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -18,6 +19,7 @@ import (
 func main() {
 
 	db := mySQLConnection()
+	defer db.Close()
 	cRepo := mysqldb.NewMysqlContentRepository(db)
 	cService := content.NewService(cRepo)
 	cHandler := content.NewHandler(cService)
@@ -61,11 +63,11 @@ func mySQLConnection() *gorm.DB {
 
 	var db *gorm.DB
 	var err error
-	db, err = gorm.Open("mysql", "root:mypassword@/mydatabase?charset=utf8&parseTime=True&loc=Local")
+	log.Println("new veersion")
+	db, err = gorm.Open("mysql", "root:password@tcp(172.23.0.2:3306)/db?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
 	db.AutoMigrate(&content.Content{})
 
 	return db

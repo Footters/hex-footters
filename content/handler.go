@@ -60,3 +60,12 @@ func (h *contentHandler) Create(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(res)
 }
+
+// Ejemplo request
+// curl -X POST   http://localhost:3000/contents  -H 'Cache-Control: no-cache' -H 'Content-Type: application/json' -d '{
+// 	"urlName" : "sevilla-fc-vs-real-betis-balompie",
+// 	"title" : "Sevilla - Betis",
+// 	"description" : "A live match event",
+// 	"status": "live",
+// 	"free": 1,
+// 	"visible":1}'
