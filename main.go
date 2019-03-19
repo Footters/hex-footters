@@ -64,7 +64,7 @@ func mySQLConnection() *gorm.DB {
 	var db *gorm.DB
 	var err error
 	log.Println("new veersion")
-	db, err = gorm.Open("mysql", "root:password@tcp(172.23.0.2:3306)/db?charset=utf8&parseTime=True&loc=Local")
+	db, err = gorm.Open("mysql", "root:password@tcp(172.19.0.2:3306)/db?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		panic(err)
 	}
