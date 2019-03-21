@@ -1,10 +1,11 @@
 # Builder
 FROM golang:alpine AS build-env
-RUN apk update && apk add --no-cache git \
-    && go get -u github.com/golang/dep/cmd/dep
+
+ENV GO111MODULE=on
+
+RUN apk update && apk add --no-cache git
 COPY . /go/src/github.com/Footters/hex-footters
 WORKDIR /go/src/github.com/Footters/hex-footters
-RUN go get
 RUN GOOS=linux go build -o hex
 
 # Exec 
