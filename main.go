@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -62,8 +63,8 @@ func mySQLConnection() *gorm.DB {
 
 	var db *gorm.DB
 	var err error
-
-	db, err = gorm.Open("mysql", "root:password@tcp(172.19.0.2:3306)/db?charset=utf8&parseTime=True&loc=Local")
+	log.Println("Connect to: ", os.Getenv("MYSQL_CONNECTION"))
+	db, err = gorm.Open("mysql", os.Getenv("MYSQL_CONNECTION"))
 	if err != nil {
 		panic(err)
 	}
