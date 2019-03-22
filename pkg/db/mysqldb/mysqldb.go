@@ -3,7 +3,7 @@ package mysqldb
 import (
 	"errors"
 
-	"github.com/Footters/hex-footters/content"
+	"github.com/Footters/hex-footters/pkg/content"
 	"github.com/jinzhu/gorm"
 )
 
