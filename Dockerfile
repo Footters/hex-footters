@@ -6,7 +6,7 @@ ENV GO111MODULE=on
 RUN apk update && apk add --no-cache git
 COPY . /go/src/github.com/Footters/hex-footters
 WORKDIR /go/src/github.com/Footters/hex-footters
-RUN GOOS=linux go build -o hex
+RUN GOOS=linux go build -o hex cmd/content/main.go
 
 # Exec 
 FROM alpine

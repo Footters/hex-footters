@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/Footters/hex-footters/content"
-	"github.com/Footters/hex-footters/db/mysqldb"
+	"github.com/Footters/hex-footters/pkg/content"
+	"github.com/Footters/hex-footters/pkg/db/mysqldb"
+
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 
@@ -63,7 +63,7 @@ func mySQLConnection() *gorm.DB {
 
 	var db *gorm.DB
 	var err error
-	log.Println("Connect to: ", os.Getenv("MYSQL_CONNECTION"))
+
 	db, err = gorm.Open("mysql", os.Getenv("MYSQL_CONNECTION"))
 	if err != nil {
 		panic(err)
