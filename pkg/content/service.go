@@ -5,6 +5,7 @@ type Service interface {
 	CreateContent(content *Content) error
 	FindContentByID(id uint) (*Content, error)
 	FindAllContents() ([]Content, error)
+	SetToLive(content *Content) error
 }
 
 type contentService struct {
@@ -31,4 +32,8 @@ func (c *contentService) FindContentByID(id uint) (*Content, error) {
 func (c *contentService) FindAllContents() ([]Content, error) {
 
 	return c.repo.FindAll()
+}
+func (c *contentService) SetToLive(content *Content) error {
+	content.Status = "live"
+	return c.repo.Update(content)
 }

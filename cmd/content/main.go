@@ -28,7 +28,7 @@ func main() {
 	router.HandleFunc("/contents", cHandler.Get).Methods("GET")
 	router.HandleFunc("/contents/{id}", cHandler.GetByID).Methods("GET")
 	router.HandleFunc("/contents", cHandler.Create).Methods("POST")
-
+	router.HandleFunc("/contents/{id}/live", cHandler.SetToLive).Methods("GET")
 	http.Handle("/", accessControl(router))
 
 	errs := make(chan error, 2)

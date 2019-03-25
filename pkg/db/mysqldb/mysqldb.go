@@ -41,3 +41,8 @@ func (r *contentRepository) FindAll() ([]content.Content, error) {
 	r.db.Find(&allContents)
 	return allContents, nil
 }
+
+func (r *contentRepository) Update(content *content.Content) error {
+	r.db.Save(&content)
+	return nil
+}
