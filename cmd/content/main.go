@@ -9,6 +9,7 @@ import (
 
 	"github.com/Footters/hex-footters/pkg/content"
 	"github.com/Footters/hex-footters/pkg/db/mysqldb"
+	"github.com/Footters/hex-footters/pkg/media"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -21,7 +22,8 @@ func main() {
 	db := mySQLConnection()
 	defer db.Close()
 	cRepo := mysqldb.NewMysqlContentRepository(db)
-	cService := content.NewService(cRepo)
+	cMedia := media.NewIBMProvider()
+	cService := content.NewService(cRepo, cMedia)
 	cHandler := content.NewHandler(cService)
 
 	router := mux.NewRouter().StrictSlash(true)

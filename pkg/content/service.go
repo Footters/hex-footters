@@ -9,13 +9,15 @@ type Service interface {
 }
 
 type contentService struct {
-	repo Repository
+	repo  Repository
+	media MediaProvider
 }
 
 //NewService Constructor
-func NewService(repo Repository) Service {
+func NewService(repo Repository, media MediaProvider) Service {
 	return &contentService{
-		repo: repo,
+		repo:  repo,
+		media: media,
 	}
 }
 
@@ -35,5 +37,6 @@ func (c *contentService) FindAllContents() ([]Content, error) {
 }
 func (c *contentService) SetToLive(content *Content) error {
 	content.Status = "live"
+	c.media.CreateLive()
 	return c.repo.Update(content)
 }
