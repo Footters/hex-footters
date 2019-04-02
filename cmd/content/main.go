@@ -21,6 +21,7 @@ func main() {
 
 	db := mySQLConnection()
 	defer db.Close()
+
 	cRepo := mysqldb.NewMysqlContentRepository(db)
 	cMedia := media.NewIBMProvider()
 	// cMedia2 := media.NewPixellotProvider()
