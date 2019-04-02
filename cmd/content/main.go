@@ -23,6 +23,8 @@ func main() {
 	defer db.Close()
 	cRepo := mysqldb.NewMysqlContentRepository(db)
 	cMedia := media.NewIBMProvider()
+	// cMedia2 := media.NewPixellotProvider()
+
 	cService := content.NewService(cRepo, cMedia)
 	cHandler := content.NewHandler(cService)
 

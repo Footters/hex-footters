@@ -35,6 +35,7 @@ func (c *contentService) FindAllContents() ([]Content, error) {
 
 	return c.repo.FindAll()
 }
+
 func (c *contentService) SetToLive(content *Content) error {
 	content.Status = "live"
 	c.media.CreateLive()
