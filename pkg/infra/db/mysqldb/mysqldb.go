@@ -3,7 +3,7 @@ package mysqldb
 import (
 	"errors"
 
-	"github.com/Footters/hex-footters/pkg/content"
+	"github.com/Footters/hex-footters/pkg/media"
 	"github.com/jinzhu/gorm"
 )
 
@@ -12,22 +12,22 @@ type contentRepository struct {
 }
 
 // NewMysqlContentRepository constructor
-func NewMysqlContentRepository(db *gorm.DB) content.Repository {
+func NewMysqlContentRepository(db *gorm.DB) media.ContentRepository {
 
 	return &contentRepository{
 		db: db,
 	}
 }
 
-func (r *contentRepository) Create(content *content.Content) error {
+func (r *contentRepository) Create(content *media.Content) error {
 	r.db.Create(content)
 	return nil
 }
-func (r *contentRepository) FindByID(id uint) (*content.Content, error) {
+func (r *contentRepository) FindByID(id uint) (*media.Content, error) {
 
-	cID := content.Content{}
+	cID := media.Content{}
 	cID.ID = id
-	cOUT := []content.Content{}
+	cOUT := []media.Content{}
 	r.db.Where(&cID).Find(&cOUT)
 
 	if len(cOUT) != 0 {
@@ -36,13 +36,13 @@ func (r *contentRepository) FindByID(id uint) (*content.Content, error) {
 
 	return nil, errors.New("Not find")
 }
-func (r *contentRepository) FindAll() ([]content.Content, error) {
-	allContents := []content.Content{}
+func (r *contentRepository) FindAll() ([]media.Content, error) {
+	allContents := []media.Content{}
 	r.db.Find(&allContents)
 	return allContents, nil
 }
 
-func (r *contentRepository) Update(content *content.Content) error {
+func (r *contentRepository) Update(content *media.Content) error {
 	r.db.Save(&content)
 	return nil
 }

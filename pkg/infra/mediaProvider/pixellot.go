@@ -1,15 +1,15 @@
-package media
+package mediaProvider
 
 import (
 	"fmt"
 
-	"github.com/Footters/hex-footters/pkg/content"
+	"github.com/Footters/hex-footters/pkg/media"
 )
 
 type pixellotProvider struct{}
 
 // NewPixellotProvider constructor
-func NewPixellotProvider() content.MediaProvider {
+func NewPixellotProvider() media.ProviderRepository {
 
 	return &pixellotProvider{}
 }

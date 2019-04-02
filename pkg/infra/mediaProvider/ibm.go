@@ -1,15 +1,15 @@
-package media
+package mediaProvider
 
 import (
 	"fmt"
 
-	"github.com/Footters/hex-footters/pkg/content"
+	"github.com/Footters/hex-footters/pkg/media"
 )
 
 type ibmProvider struct{}
 
 // NewIBMProvider constructor
-func NewIBMProvider() content.MediaProvider {
+func NewIBMProvider() media.ProviderRepository {
 
 	return &ibmProvider{}
 }

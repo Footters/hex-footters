@@ -7,9 +7,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Footters/hex-footters/content"
 	"github.com/Footters/hex-footters/pkg/infra/db/mysqldb"
 	"github.com/Footters/hex-footters/pkg/infra/mediaProvider"
+	"github.com/Footters/hex-footters/pkg/media"
+
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 
@@ -25,8 +26,8 @@ func main() {
 	cMedia := mediaProvider.NewIBMProvider()
 	// cMedia2 := media.NewPixellotProvider()
 
-	cService := content.NewService(cRepo, cMedia)
-	cHandler := content.NewHandler(cService)
+	cService := media.NewService(cRepo, cMedia)
+	cHandler := media.NewHandler(cService)
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/contents", cHandler.Get).Methods("GET")
@@ -72,7 +73,7 @@ func mySQLConnection() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(&content.Content{})
+	db.AutoMigrate(&media.Content{})
 
 	return db
 }
