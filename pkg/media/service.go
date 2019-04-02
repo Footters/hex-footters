@@ -1,4 +1,4 @@
-package content
+package media
 
 // Service Content inteface
 type Service interface {
@@ -9,15 +9,15 @@ type Service interface {
 }
 
 type contentService struct {
-	repo  Repository
-	media MediaProvider
+	repo     ContentRepository
+	provider ProviderRepository
 }
 
 //NewService Constructor
-func NewService(repo Repository, media MediaProvider) Service {
+func NewService(repo ContentRepository, provider ProviderRepository) Service {
 	return &contentService{
-		repo:  repo,
-		media: media,
+		repo:     repo,
+		provider: provider,
 	}
 }
 
@@ -38,6 +38,6 @@ func (c *contentService) FindAllContents() ([]Content, error) {
 
 func (c *contentService) SetToLive(content *Content) error {
 	content.Status = "live"
-	c.media.CreateLive()
+	c.provider.CreateLive()
 	return c.repo.Update(content)
 }

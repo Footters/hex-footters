@@ -1,4 +1,4 @@
-package content
+package media
 
 import (
 	"encoding/json"
