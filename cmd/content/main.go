@@ -7,10 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Footters/hex-footters/pkg/content"
-	"github.com/Footters/hex-footters/pkg/db/mysqldb"
-	"github.com/Footters/hex-footters/pkg/media"
-
+	"github.com/Footters/hex-footters/content"
+	"github.com/Footters/hex-footters/pkg/infra/db/mysqldb"
+	"github.com/Footters/hex-footters/pkg/infra/mediaProvider"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 
@@ -23,7 +22,7 @@ func main() {
 	defer db.Close()
 
 	cRepo := mysqldb.NewMysqlContentRepository(db)
-	cMedia := media.NewIBMProvider()
+	cMedia := mediaProvider.NewIBMProvider()
 	// cMedia2 := media.NewPixellotProvider()
 
 	cService := content.NewService(cRepo, cMedia)
