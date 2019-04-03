@@ -1,4 +1,4 @@
-package content
+package media
 
 import (
 	"encoding/json"
@@ -13,6 +13,7 @@ type Handler interface {
 	Get(w http.ResponseWriter, r *http.Request)
 	GetByID(w http.ResponseWriter, r *http.Request)
 	Create(w http.ResponseWriter, r *http.Request)
+	SetToLive(w http.ResponseWriter, r *http.Request)
 }
 
 type contentHandler struct {
@@ -61,11 +62,16 @@ func (h *contentHandler) Create(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(res)
 }
 
-// Ejemplo request
-// curl -X POST   http://localhost:3000/contents  -H 'Cache-Control: no-cache' -H 'Content-Type: application/json' -d '{
-// 	"urlName" : "sevilla-fc-vs-real-betis-balompie",
-// 	"title" : "Sevilla - Betis",
-// 	"description" : "A live match event",
-// 	"status": "live",
-// 	"free": 1,
-// 	"visible":1}'
+func (h *contentHandler) SetToLive(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	idVars := vars["id"]
+	id, _ := strconv.Atoi(idVars)
+	content, _ := h.contentService.FindContentByID(uint(id))
+	h.contentService.SetToLive(content)
+
+	res, _ := json.Marshal(content)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(res)
+}

@@ -7,8 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Footters/hex-footters/pkg/content"
 	"github.com/Footters/hex-footters/pkg/db/mysqldb"
+	"github.com/Footters/hex-footters/pkg/media"
+	"github.com/Footters/hex-footters/pkg/mediaProvider"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -20,15 +21,19 @@ func main() {
 
 	db := mySQLConnection()
 	defer db.Close()
+
 	cRepo := mysqldb.NewMysqlContentRepository(db)
-	cService := content.NewService(cRepo)
-	cHandler := content.NewHandler(cService)
+	cMedia := mediaProvider.NewIBMProvider()
+	// cMedia2 := media.NewGoogleProvider()
+
+	cService := media.NewService(cRepo, cMedia)
+	cHandler := media.NewHandler(cService)
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/contents", cHandler.Get).Methods("GET")
 	router.HandleFunc("/contents/{id}", cHandler.GetByID).Methods("GET")
 	router.HandleFunc("/contents", cHandler.Create).Methods("POST")
-
+	router.HandleFunc("/contents/{id}/live", cHandler.SetToLive).Methods("GET")
 	http.Handle("/", accessControl(router))
 
 	errs := make(chan error, 2)
@@ -68,7 +73,7 @@ func mySQLConnection() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(&content.Content{})
+	db.AutoMigrate(&media.Content{})
 
 	return db
 }

@@ -1,3 +1,9 @@
+docker: dockerb docker-compose
+dockerb:
+	docker build -t hex .
+docker-compose:
+	docker-compose down
+	docker-compose up
 getIP:
 	docker inspect hex-footters_db_1 | grep IPAddress
 createContent:
