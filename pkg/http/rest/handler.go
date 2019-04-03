@@ -1,10 +1,11 @@
-package media
+package rest
 
 import (
 	"encoding/json"
 	"net/http"
 	"strconv"
 
+	"github.com/Footters/hex-footters/pkg/media"
 	"github.com/gorilla/mux"
 )
 
@@ -17,11 +18,11 @@ type Handler interface {
 }
 
 type contentHandler struct {
-	contentService Service
+	contentService media.Service
 }
 
 // NewHandler constructor
-func NewHandler(contentService Service) Handler {
+func NewHandler(contentService media.Service) Handler {
 	return &contentHandler{
 		contentService: contentService,
 	}
@@ -50,7 +51,7 @@ func (h *contentHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 }
 func (h *contentHandler) Create(w http.ResponseWriter, r *http.Request) {
 
-	var content Content
+	var content media.Content
 	decoder := json.NewDecoder(r.Body)
 	_ = decoder.Decode(&content)
 	_ = h.contentService.CreateContent(&content)

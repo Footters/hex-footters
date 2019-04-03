@@ -1,4 +1,4 @@
-package mediaProvider
+package ibm
 
 import (
 	"fmt"
@@ -15,13 +15,13 @@ func NewIBMProvider() media.ProviderRepository {
 }
 
 func (ip *ibmProvider) CreateLive() {
-	fmt.Println("Create Live")
+	fmt.Println("Create Live with IBM")
 }
 
 func (ip *ibmProvider) GetLive() {
-	fmt.Println("Get Live")
+	fmt.Println("Get Live with IBM")
 }
 
 func (ip *ibmProvider) GetVOD() {
-	fmt.Println("Get VOD")
+	fmt.Println("Get VOD with IBM")
 }

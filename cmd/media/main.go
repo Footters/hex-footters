@@ -7,9 +7,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Footters/hex-footters/pkg/db/mysqldb"
+	"github.com/Footters/hex-footters/pkg/http/rest"
 	"github.com/Footters/hex-footters/pkg/media"
-	"github.com/Footters/hex-footters/pkg/mediaProvider"
+	"github.com/Footters/hex-footters/pkg/provider/ibm"
+	"github.com/Footters/hex-footters/pkg/storage/mysqldb"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -23,11 +24,11 @@ func main() {
 	defer db.Close()
 
 	cRepo := mysqldb.NewMysqlContentRepository(db)
-	cMedia := mediaProvider.NewIBMProvider()
-	// cMedia2 := media.NewGoogleProvider()
+	cMedia := ibm.NewIBMProvider()
+	// cMedia2 := google.NewGoogleProvider()
 
 	cService := media.NewService(cRepo, cMedia)
-	cHandler := media.NewHandler(cService)
+	cHandler := rest.NewHandler(cService)
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/contents", cHandler.Get).Methods("GET")
