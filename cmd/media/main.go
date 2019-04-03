@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Footters/hex-footters/pkg/infra/db/mysqldb"
-	"github.com/Footters/hex-footters/pkg/infra/mediaProvider"
+	"github.com/Footters/hex-footters/pkg/db/mysqldb"
 	"github.com/Footters/hex-footters/pkg/media"
+	"github.com/Footters/hex-footters/pkg/mediaProvider"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -24,7 +24,7 @@ func main() {
 
 	cRepo := mysqldb.NewMysqlContentRepository(db)
 	cMedia := mediaProvider.NewIBMProvider()
-	// cMedia2 := media.NewPixellotProvider()
+	// cMedia2 := media.NewGoogleProvider()
 
 	cService := media.NewService(cRepo, cMedia)
 	cHandler := media.NewHandler(cService)
