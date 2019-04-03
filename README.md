@@ -1,2 +1,2 @@
 # Hex Footters
-Hex arch with Footters logic
+Golang Hex-arch with Footters logic
