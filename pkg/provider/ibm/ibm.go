@@ -14,7 +14,7 @@ func NewIBMProvider() media.ProviderRepository {
 	return &ibmProvider{}
 }
 
-func (ip *ibmProvider) CreateLive() {
+func (ip *ibmProvider) CreateEvent() {
 	fmt.Println("Create Live with IBM")
 }
 

@@ -10,7 +10,7 @@ type ContentRepository interface {
 
 // ProviderRepository of media
 type ProviderRepository interface {
-	CreateLive()
+	CreateEvent()
 	GetLive()
 	GetVOD()
 }

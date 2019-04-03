@@ -14,7 +14,7 @@ func NewGoogleProvider() media.ProviderRepository {
 	return &googleProvider{}
 }
 
-func (gp *googleProvider) CreateLive() {
+func (gp *googleProvider) CreateEvent() {
 	fmt.Println("Create Live with Google")
 }
 
