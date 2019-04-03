@@ -9,7 +9,7 @@ import (
 
 	"github.com/Footters/hex-footters/pkg/http/rest"
 	"github.com/Footters/hex-footters/pkg/media"
-	"github.com/Footters/hex-footters/pkg/provider/ibm"
+	"github.com/Footters/hex-footters/pkg/provider/google"
 	"github.com/Footters/hex-footters/pkg/storage/mysqldb"
 
 	"github.com/gorilla/mux"
@@ -23,18 +23,18 @@ func main() {
 	db := mySQLConnection()
 	defer db.Close()
 
-	cRepo := mysqldb.NewMysqlContentRepository(db)
-	cMedia := ibm.NewIBMProvider()
-	// cMedia2 := google.NewGoogleProvider()
+	mRepo := mysqldb.NewMysqlContentRepository(db)
+	// mProv := ibm.NewIBMProvider()
+	mProv := google.NewGoogleProvider()
 
-	cService := media.NewService(cRepo, cMedia)
-	cHandler := rest.NewHandler(cService)
+	mService := media.NewService(mRepo, mProv)
+	mHandler := rest.NewHandler(mService)
 
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/contents", cHandler.Get).Methods("GET")
-	router.HandleFunc("/contents/{id}", cHandler.GetByID).Methods("GET")
-	router.HandleFunc("/contents", cHandler.Create).Methods("POST")
-	router.HandleFunc("/contents/{id}/live", cHandler.SetToLive).Methods("GET")
+	router.HandleFunc("/contents", mHandler.Get).Methods("GET")
+	router.HandleFunc("/contents/{id}", mHandler.GetByID).Methods("GET")
+	router.HandleFunc("/contents", mHandler.Create).Methods("POST")
+	router.HandleFunc("/contents/{id}/live", mHandler.SetToLive).Methods("GET")
 	http.Handle("/", accessControl(router))
 
 	errs := make(chan error, 2)
