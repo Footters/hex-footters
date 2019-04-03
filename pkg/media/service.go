@@ -37,7 +37,7 @@ func (c *contentService) FindAllContents() ([]Content, error) {
 }
 
 func (c *contentService) SetToLive(content *Content) error {
-	content.Status = "live"
 	c.provider.CreateEvent()
+	content.Status = "live"
 	return c.repo.Update(content)
 }
