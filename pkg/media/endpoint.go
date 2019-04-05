@@ -1,34 +1,52 @@
-package endpoint
+package media
 
 import (
 	"context"
-
-	"github.com/Footters/hex-footters/pkg/media"
+	"encoding/json"
+	"net/http"
+	"strconv"
 
 	"github.com/go-kit/kit/endpoint"
 )
 
-type contentRequest struct {
+// GetContentRequest struct
+type GetContentRequest struct {
 	ID uint `json:"id"`
 }
 
-type contentResponse struct {
-	C   *media.Content `json:"c"`
-	Err error          `json:"err"`
+// GetContentResponse struct
+type GetContentResponse struct {
+	Content *Content `json:"content"`
 }
 
 // MakeGetContentEndpoint func
-func MakeGetContentEndpoint(svc media.Service) endpoint.Endpoint {
+func MakeGetContentEndpoint(svc Service) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
-		req := request.(contentRequest)
+		req := request.(GetContentRequest)
 		c, err := svc.FindContentByID(req.ID)
 
 		if err != nil {
-			return contentResponse{
-				C:   c,
-				Err: err,
-			}, nil
+			return nil, err
 		}
-		return contentResponse{Err: err}, nil
+
+		return GetContentResponse{Content: c}, nil
 	}
+}
+
+// DecodeGetContentRequest func
+func DecodeGetContentRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil {
+		return nil, err
+	}
+
+	request := GetContentRequest{ID: uint(id)}
+
+	return request, nil
+}
+
+// EncodeResponse func
+func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	return json.NewEncoder(w).Encode(response)
 }
