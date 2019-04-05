@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Footters/hex-footters/pkg/media"
 	"github.com/gorilla/mux"
 )
 

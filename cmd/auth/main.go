@@ -27,7 +27,7 @@ func main() {
 	defer logger.Log("msg", "goodbye")
 
 	// Business domain
-	uRepo := redisdb.NewRedisUserRepository(redisConnection("localhost:6379"))
+	uRepo := redisdb.NewRedisUserRepository(redisConnection("172.17.0.2:6379"))
 	svc := auth.NewService(uRepo)
 	svc = auth.NewLogginMiddleware(logger, svc)
 

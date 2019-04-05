@@ -7,10 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Footters/hex-footters/pkg/http/rest"
-	"github.com/Footters/hex-footters/pkg/media"
-	"github.com/Footters/hex-footters/pkg/provider/google"
-	"github.com/Footters/hex-footters/pkg/storage/mysqldb"
+	"github.com/Footters/hex-footters/pkg/media/http/rest"
+	"github.com/Footters/hex-footters/pkg/media/provider/google"
+	"github.com/Footters/hex-footters/pkg/media/storage/mysqldb"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
