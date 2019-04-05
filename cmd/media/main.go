@@ -1,23 +1,30 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
-	"os/signal"
-	"syscall"
 
-	"github.com/Footters/hex-footters/pkg/media/http/rest"
+	"github.com/Footters/hex-footters/pkg/media"
 	"github.com/Footters/hex-footters/pkg/media/provider/google"
 	"github.com/Footters/hex-footters/pkg/media/storage/mysqldb"
 
+	"github.com/go-kit/kit/log"
+	httptransport "github.com/go-kit/kit/transport/http"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
+
+	// Logging
+	var logger log.Logger
+	{
+		logger = log.NewLogfmtLogger(os.Stdout)
+	}
+
+	logger.Log("msg", "hello")
+	defer logger.Log("msg", "goodbye")
 
 	db := mySQLConnection()
 	defer db.Close()
@@ -27,27 +34,48 @@ func main() {
 	mProv := google.NewGoogleProvider()
 
 	mService := media.NewService(mRepo, mProv)
-	mHandler := rest.NewHandler(mService)
 
-	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/contents", mHandler.Get).Methods("GET")
-	router.HandleFunc("/contents/{id}", mHandler.GetByID).Methods("GET")
-	router.HandleFunc("/contents", mHandler.Create).Methods("POST")
-	router.HandleFunc("/contents/{id}/live", mHandler.SetToLive).Methods("GET")
-	http.Handle("/", accessControl(router))
+	//Endpoint
+	getContentEndpoint := media.MakeGetContentEndpoint(mService)
+	getAllContentsEndpoint := media.MakeGetAllContentsEndpoint(mService)
+	createContentEndpoint := media.MakeCreateContentsEndpoint(mService)
+	toLiveContentEndpoint := media.MakeSetContentLiveEndpoint(mService)
 
-	errs := make(chan error, 2)
-	go func() {
-		fmt.Println("Listening on port: 3000")
-		errs <- http.ListenAndServe(":3000", nil)
-	}()
-	go func() {
-		c := make(chan os.Signal, 1)
-		signal.Notify(c, syscall.SIGINT)
-		errs <- fmt.Errorf("%s", <-c)
-	}()
+	// Transport
+	getContentHandler := httptransport.NewServer(
+		getContentEndpoint,
+		media.DecodeGetContentRequest,
+		media.EncodeResponse,
+	)
 
-	fmt.Printf("terminated %s", <-errs)
+	getAllContentsHandler := httptransport.NewServer(
+		getAllContentsEndpoint,
+		media.DecodeGetAllContentsRequest,
+		media.EncodeResponse,
+	)
+
+	createContentHandler := httptransport.NewServer(
+		createContentEndpoint,
+		media.DecodeCreateContentRequest,
+		media.EncodeResponse,
+	)
+
+	toLiveContentHandler := httptransport.NewServer(
+		toLiveContentEndpoint,
+		media.DecodeSetContentLiveRequest,
+		media.EncodeResponse,
+	)
+
+	r := mux.NewRouter().StrictSlash(true)
+	r.Handle("/contents", getAllContentsHandler).Methods("GET")
+	r.Handle("/contents/{id}", getContentHandler).Methods("GET")
+	r.Handle("/contents", createContentHandler).Methods("POST")
+	r.Handle("/contents/{id}/live", toLiveContentHandler).Methods("GET")
+	http.Handle("/", accessControl(r))
+
+	// Go!
+	logger.Log("transport", "HTTP", "addr", ":3000")
+	logger.Log("exit", http.ListenAndServe(":3000", nil))
 }
 
 func accessControl(h http.Handler) http.Handler {
