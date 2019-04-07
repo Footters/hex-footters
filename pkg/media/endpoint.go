@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/go-kit/kit/endpoint"
+	"github.com/gorilla/mux"
 )
 
 // GetContentRequest struct
@@ -35,7 +36,10 @@ func MakeGetContentEndpoint(svc Service) endpoint.Endpoint {
 
 // DecodeGetContentRequest func
 func DecodeGetContentRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	vars := mux.Vars(r)
+	idVars := vars["id"]
+	id, err := strconv.Atoi(idVars)
+
 	if err != nil {
 		return nil, err
 	}
@@ -80,8 +84,8 @@ type CreateContentResponse struct {
 	Msg string `json:"msg"`
 }
 
-// MakeCreateContentsEndpoint func
-func MakeCreateContentsEndpoint(svc Service) endpoint.Endpoint {
+// MakeCreateContentEndpoint func
+func MakeCreateContentEndpoint(svc Service) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateContentRequest)
 		err := svc.CreateContent(&req.Content)
@@ -123,7 +127,10 @@ func MakeSetContentLiveEndpoint(svc Service) endpoint.Endpoint {
 
 // DecodeSetContentLiveRequest func
 func DecodeSetContentLiveRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	vars := mux.Vars(r)
+	idVars := vars["id"]
+	id, err := strconv.Atoi(idVars)
+
 	if err != nil {
 		return nil, err
 	}

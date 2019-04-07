@@ -34,11 +34,12 @@ func main() {
 	mProv := google.NewGoogleProvider()
 
 	mService := media.NewService(mRepo, mProv)
+	mService = media.NewLogginMiddleware(logger, mService)
 
 	//Endpoint
 	getContentEndpoint := media.MakeGetContentEndpoint(mService)
 	getAllContentsEndpoint := media.MakeGetAllContentsEndpoint(mService)
-	createContentEndpoint := media.MakeCreateContentsEndpoint(mService)
+	createContentEndpoint := media.MakeCreateContentEndpoint(mService)
 	toLiveContentEndpoint := media.MakeSetContentLiveEndpoint(mService)
 
 	// Transport
@@ -66,10 +67,10 @@ func main() {
 		media.EncodeResponse,
 	)
 
-	r := mux.NewRouter().StrictSlash(true)
+	r := mux.NewRouter()
+	r.Handle("/contents", createContentHandler).Methods("POST")
 	r.Handle("/contents", getAllContentsHandler).Methods("GET")
 	r.Handle("/contents/{id}", getContentHandler).Methods("GET")
-	r.Handle("/contents", createContentHandler).Methods("POST")
 	r.Handle("/contents/{id}/live", toLiveContentHandler).Methods("GET")
 	http.Handle("/", accessControl(r))
 
