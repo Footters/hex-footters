@@ -3,6 +3,5 @@ Golang Hex-arch with Footters logic
 
 ## To Do
 - [x] Create hex structure
-- [ ] Add Go Kit
-- [ ] Add other models
+- [x] Add Go Kit 👉https://github.com/Footters/hex-footters/tree/go-kit
 - [ ] Unit Tests
