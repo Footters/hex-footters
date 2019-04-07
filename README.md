@@ -1,4 +1,4 @@
-# Example microservices Footters
+# Example microservices
 Example of microservices with Go Kit and hexagonal architecture
 
 ## To Do
