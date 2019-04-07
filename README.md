@@ -1,5 +1,5 @@
-# Hex Footters
-Golang Hex-arch with Footters logic
+# Example microservices Footters
+Example of microservices with Go Kit and hexagonal architecture
 
 ## To Do
 - [x] Create hex structure
