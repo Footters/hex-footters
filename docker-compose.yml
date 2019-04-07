@@ -20,14 +20,32 @@ services:
       # Where our data will be persisted
     volumes:
       - my-db:/var/lib/mysql
-  hex:
-    image: hex:latest
+  redis:
+    image: redis:4.0.5-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '6379:6379'
+    expose:
+      # Opens port 3306 on the container
+      - '6379'
+    volumes:
+      - redis-data:/data
+  media:
+    image: media:latest
     environment:
       MYSQL_CONNECTION: 'root:password@tcp(db:3306)/db?charset=utf8&parseTime=True&loc=Local'
     ports:
       - "3000:3000"
     depends_on:
       - db
+  auth:
+    image: auth:latest
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
 # Names our volume
 volumes:
   my-db:
+  redis-data:

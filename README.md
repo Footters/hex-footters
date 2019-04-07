@@ -3,6 +3,6 @@ Golang Hex-arch with Footters logic
 
 ## To Do
 - [x] Create hex structure
-- [ ] Add Go Kit
-- [ ] Add other models
+- [x] Add Go Kit
+- [x] Add auth service
 - [ ] Unit Tests
