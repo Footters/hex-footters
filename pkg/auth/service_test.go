@@ -10,14 +10,14 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-func TestUserServiceSuite(t *testing.T) {
-	suite.Run(t, new(UserServiceTestSuite))
-}
-
 type UserServiceTestSuite struct {
 	suite.Suite
 	userRepo  *mocks.MockUserRepository
 	underTest auth.Service
+}
+
+func TestUserServiceSuite(t *testing.T) {
+	suite.Run(t, new(UserServiceTestSuite))
 }
 
 func (suite *UserServiceTestSuite) SetupTest() {
@@ -29,15 +29,35 @@ func (suite *UserServiceTestSuite) SetupTest() {
 }
 
 func (suite *UserServiceTestSuite) TestRegisterUser() {
+	// Arrange
 	u := &auth.User{
 		Email:    "david@lcarrascal.com",
 		Password: "secret",
 	}
+	suite.userRepo.EXPECT().Create(gomock.AssignableToTypeOf(&auth.User{})).Return(nil)
 
-	suite.userRepo.EXPECT().Create(gomock.AssignableToTypeOf(&auth.User{}))
+	// Act
 	err := suite.underTest.RegisterUser(u)
 
+	// Assert
 	suite.NoError(err, "Shouldn't error")
 	suite.NotNil(u.Email, "should not be null")
 	suite.NotNil(u.Password, "should not be null")
+}
+
+func (suite *UserServiceTestSuite) TestLogin() {
+	// Arrange
+	// When my service call to FindByEmail, it will return u auth.User
+	u := &auth.User{
+		Email:    "david@lcarrascal.com",
+		Password: "secret",
+	}
+	suite.userRepo.EXPECT().FindByEmail(u.Email).Return(u, nil)
+
+	// Act
+	res, err := suite.underTest.Login(u.Email, u.Password)
+
+	// Assert
+	suite.NoError(err, "Shoulnd't error")
+	suite.Equal(u, res, "should be pushing value returned from repo")
 }
