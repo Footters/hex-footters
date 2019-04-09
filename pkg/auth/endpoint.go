@@ -34,7 +34,7 @@ func MakeLoginEndpoint(svc Service) endpoint.Endpoint {
 			return nil, err
 		}
 
-		return loginResponse{u}, nil
+		return LoginResponse{u}, nil
 	}
 }
 
@@ -56,7 +56,7 @@ type LoginRequest struct {
 }
 
 // LoginResponse struct
-type loginResponse struct {
+type LoginResponse struct {
 	User *User `json:"user"`
 }
 
