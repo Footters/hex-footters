@@ -34,19 +34,17 @@ func (suite *UserServerTestSuite) SetupTest() {
 	registerEndpoint := auth.MakeRegisterEndpoint(suite.svc)
 	loginEndpoint := auth.MakeLoginEndpoint(suite.svc)
 
-	registerHandler := httptransport.NewServer(
+	suite.register = httptransport.NewServer(
 		registerEndpoint,
 		auth.DecodeRegisterRequest,
 		auth.EncodeResponse,
 	)
 
-	loginHandler := httptransport.NewServer(
+	suite.login = httptransport.NewServer(
 		loginEndpoint,
 		auth.DecodeLoginRequest,
 		auth.EncodeResponse,
 	)
-	suite.register = registerHandler
-	suite.login = loginHandler
 }
 
 func (suite *UserServerTestSuite) TestRegister() {
