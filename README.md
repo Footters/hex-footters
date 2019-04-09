@@ -5,5 +5,5 @@ Example of microservices with Go Kit and hexagonal architecture
 - [x] Create hex structure
 - [x] Add Go Kit
 - [x] Add auth service
-- [x] Unit Tests 👉 https://github.com/Footters/hex-footters/tree/testing
+- [x] Unit Tests
 - [ ] Communication between services with GRPC
