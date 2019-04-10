@@ -69,9 +69,9 @@ func (suite *MediaServiceTestSuite) TestFindContentByID() {
 	suite.Equal(c, res, "should be the same")
 }
 
-func (suite *MediaServiceTestSuite) FindAllContents() {
-	cs := []*media.Content{
-		&media.Content{
+func (suite *MediaServiceTestSuite) TestFindAllContents() {
+	cs := []media.Content{
+		media.Content{
 			URLName:     "sevillafc-betis",
 			Title:       "Sevilla FC vs Real Betis",
 			Description: "Derbi sevillano",
@@ -79,7 +79,7 @@ func (suite *MediaServiceTestSuite) FindAllContents() {
 			Free:        1,
 			Visible:     1,
 		},
-		&media.Content{
+		media.Content{
 			URLName:     "barca-madrid",
 			Title:       "Barcelona vs Real Madrid",
 			Description: "El clásico de España",
@@ -96,7 +96,7 @@ func (suite *MediaServiceTestSuite) FindAllContents() {
 	suite.Len(res, 2, "Should get two results")
 }
 
-func (suite *MediaServiceTestSuite) SetToLive() {
+func (suite *MediaServiceTestSuite) TestSetToLive() {
 	c := &media.Content{
 		URLName:     "sevillafc-betis",
 		Title:       "Sevilla FC vs Real Betis",
@@ -109,7 +109,8 @@ func (suite *MediaServiceTestSuite) SetToLive() {
 	cu := c
 	cu.Status = "live"
 
-	suite.contentRepo.EXPECT().Update(c).Return(cu)
+	suite.providerRepo.EXPECT().CreateEvent()
+	suite.contentRepo.EXPECT().Update(c).Return(nil)
 
 	err := suite.underTest.SetToLive(c)
 	suite.NoError(err, "Shouldn't error")
