@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/Footters/hex-footters/pkg/auth/endpoint"
+	"github.com/Footters/hex-footters/pkg/auth/transport"
 
 	"github.com/Footters/hex-footters/pkg/auth"
 	"github.com/Footters/hex-footters/pkg/auth/mocks"
@@ -36,14 +37,14 @@ func (suite *UserServerTestSuite) SetupTest() {
 
 	suite.register = httptransport.NewServer(
 		ae.Register,
-		endpoint.DecodeRegisterRequest,
-		endpoint.EncodeResponse,
+		transport.DecodeHTTPRegisterRequest,
+		transport.EncodeHTTPResponse,
 	)
 
 	suite.login = httptransport.NewServer(
 		ae.Login,
-		endpoint.DecodeLoginRequest,
-		endpoint.EncodeResponse,
+		transport.DecodeHTTPLoginRequest,
+		transport.EncodeHTTPResponse,
 	)
 }
 
