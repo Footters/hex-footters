@@ -71,7 +71,7 @@ func main() {
 	r.Handle("/contents", createContentHandler).Methods("POST")
 	r.Handle("/contents", getAllContentsHandler).Methods("GET")
 	r.Handle("/contents/{id}", getContentHandler).Methods("GET")
-	r.Handle("/contents/{id}/live", toLiveContentHandler).Methods("GET")
+	r.Handle("/contents/{id}/live", toLiveContentHandler).Methods("PUT")
 	http.Handle("/", accessControl(r))
 
 	// Go!

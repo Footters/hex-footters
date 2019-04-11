@@ -5,9 +5,10 @@
 package mocks
 
 import (
+	reflect "reflect"
+
 	media "github.com/Footters/hex-footters/pkg/media"
 	gomock "github.com/golang/mock/gomock"
-	reflect "reflect"
 )
 
 // MockService is a mock of Service interface
