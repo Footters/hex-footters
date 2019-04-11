@@ -1,6 +1,8 @@
 package transport
 
 import (
+	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/Footters/hex-footters/pkg/auth/endpoint"
@@ -15,18 +17,42 @@ func NewHTTPHandler(endpoints endpoint.Endpoints) http.Handler {
 
 	registerHandler := httptransport.NewServer(
 		endpoints.Register,
-		endpoint.DecodeRegisterRequest,
-		endpoint.EncodeResponse,
+		DecodeHTTPRegisterRequest,
+		EncodeHTTPResponse,
 	)
 
 	loginHandler := httptransport.NewServer(
 		endpoints.Login,
-		endpoint.DecodeLoginRequest,
-		endpoint.EncodeResponse,
+		DecodeHTTPLoginRequest,
+		EncodeHTTPResponse,
 	)
 
 	m.Handle("/register", registerHandler)
 	m.Handle("/login", loginHandler)
 
 	return m
+}
+
+// DecodeHTTPRegisterRequest func
+func DecodeHTTPRegisterRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	var request endpoint.RegisterRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		return nil, err
+	}
+	return request, nil
+}
+
+// DecodeHTTPLoginRequest func
+func DecodeHTTPLoginRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	var request endpoint.LoginRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		return nil, err
+	}
+	return request, nil
+}
+
+// EncodeHTTPResponse func
+func EncodeHTTPResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	return json.NewEncoder(w).Encode(response)
 }

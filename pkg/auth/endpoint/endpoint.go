@@ -2,8 +2,6 @@ package endpoint
 
 import (
 	"context"
-	"encoding/json"
-	"net/http"
 
 	"github.com/Footters/hex-footters/pkg/auth"
 	"github.com/go-kit/kit/endpoint"
@@ -77,28 +75,4 @@ type LoginRequest struct {
 // LoginResponse struct
 type LoginResponse struct {
 	User *auth.User `json:"user"`
-}
-
-// DecodeRegisterRequest func
-func DecodeRegisterRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var request RegisterRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		return nil, err
-	}
-	return request, nil
-}
-
-// DecodeLoginRequest func
-func DecodeLoginRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var request LoginRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		return nil, err
-	}
-	return request, nil
-}
-
-// EncodeResponse func
-func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	return json.NewEncoder(w).Encode(response)
 }
