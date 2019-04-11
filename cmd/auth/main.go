@@ -8,6 +8,7 @@ import (
 	"github.com/go-kit/kit/log"
 
 	"github.com/Footters/hex-footters/pkg/auth"
+	authendpoint "github.com/Footters/hex-footters/pkg/auth/endpoint"
 	"github.com/Footters/hex-footters/pkg/auth/storage/redisdb"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/go-redis/redis"
@@ -31,23 +32,21 @@ func main() {
 	svc := auth.NewService(uRepo)
 	svc = auth.NewLogginMiddleware(logger, svc)
 
-	//Endpoint
-	registerEndpoint := auth.MakeRegisterEndpoint(svc)
-	loginEndpoint := auth.MakeLoginEndpoint(svc)
+	ae := authendpoint.MakeServerEndpoints(svc)
 
 	// Transport
 	mux := http.NewServeMux()
 
 	registerHandler := httptransport.NewServer(
-		registerEndpoint,
-		auth.DecodeRegisterRequest,
-		auth.EncodeResponse,
+		ae.Register,
+		authendpoint.DecodeRegisterRequest,
+		authendpoint.EncodeResponse,
 	)
 
 	loginHandler := httptransport.NewServer(
-		loginEndpoint,
-		auth.DecodeLoginRequest,
-		auth.EncodeResponse,
+		ae.Login,
+		authendpoint.DecodeLoginRequest,
+		authendpoint.EncodeResponse,
 	)
 
 	mux.Handle("/register", registerHandler)
