@@ -7,13 +7,12 @@ import (
 
 	"github.com/Footters/hex-footters/pkg/auth/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
-	"github.com/gorilla/mux"
 )
 
 // NewHTTPHandler returns an HTTP handler that makes a set of endpoints
 // available on predefined paths.
 func NewHTTPHandler(endpoints endpoint.Endpoints) http.Handler {
-	m := mux.NewRouter()
+	m := http.NewServeMux()
 
 	registerHandler := httptransport.NewServer(
 		endpoints.Register,

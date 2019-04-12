@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -10,64 +9,25 @@ import (
 	"github.com/Footters/hex-footters/pkg/auth"
 	authendpoint "github.com/Footters/hex-footters/pkg/auth/endpoint"
 	"github.com/Footters/hex-footters/pkg/auth/storage/redisdb"
-	httptransport "github.com/go-kit/kit/transport/http"
-	"github.com/go-redis/redis"
+	authtransport "github.com/Footters/hex-footters/pkg/auth/transport"
 )
 
 func main() {
-
-	// Logging
-	var logger log.Logger
-	{
-		logger = log.NewLogfmtLogger(os.Stdout)
-		// logger = log.NewContext(logger).With("ts", log.DefaultTimestampUTC)
-		// logger = log.NewContext(logger).With("caller", log.DefaultCaller)
-	}
-
+	// Logger
+	logger := log.NewLogfmtLogger(os.Stdout)
 	logger.Log("msg", "hello")
 	defer logger.Log("msg", "goodbye")
 
-	// Business domain
-	uRepo := redisdb.NewRedisUserRepository(redisConnection("redis:6379"))
+	// Service
+	uRepo := redisdb.NewRedisUserRepository(redisdb.NewRedisConnection("redis:6379"))
 	svc := auth.NewService(uRepo)
 	svc = auth.NewLogginMiddleware(logger, svc)
 
+	// HTTPHandler
 	ae := authendpoint.MakeServerEndpoints(svc)
-
-	// Transport
-	mux := http.NewServeMux()
-
-	registerHandler := httptransport.NewServer(
-		ae.Register,
-		authendpoint.DecodeRegisterRequest,
-		authendpoint.EncodeResponse,
-	)
-
-	loginHandler := httptransport.NewServer(
-		ae.Login,
-		authendpoint.DecodeLoginRequest,
-		authendpoint.EncodeResponse,
-	)
-
-	mux.Handle("/register", registerHandler)
-	mux.Handle("/login", loginHandler)
+	httpHandler := authtransport.NewHTTPHandler(ae)
 
 	// Go!
 	logger.Log("transport", "HTTP", "addr", ":8081")
-	logger.Log("exit", http.ListenAndServe(":8081", mux))
-}
-
-func redisConnection(url string) *redis.Client {
-	fmt.Println("Connecting to Redis DB")
-	client := redis.NewClient(&redis.Options{
-		Addr:     url,
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
-	err := client.Ping().Err()
-
-	if err != nil {
-		panic(err)
-	}
-	return client
+	logger.Log("exit", http.ListenAndServe(":8081", httpHandler))
 }
