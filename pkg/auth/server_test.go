@@ -33,16 +33,16 @@ func (suite *UserServerTestSuite) SetupTest() {
 	defer mockCtrl.Finish()
 
 	suite.svc = mocks.NewMockService(mockCtrl)
-	ae := endpoint.MakeServerEndpoints(suite.svc)
+	endpoints := endpoint.MakeServerEndpoints(suite.svc)
 
 	suite.register = httptransport.NewServer(
-		ae.Register,
+		endpoints.Register,
 		transport.DecodeHTTPRegisterRequest,
 		transport.EncodeHTTPResponse,
 	)
 
 	suite.login = httptransport.NewServer(
-		ae.Login,
+		endpoints.Login,
 		transport.DecodeHTTPLoginRequest,
 		transport.EncodeHTTPResponse,
 	)

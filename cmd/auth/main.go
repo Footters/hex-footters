@@ -23,9 +23,11 @@ func main() {
 	svc := auth.NewService(uRepo)
 	svc = auth.NewLogginMiddleware(logger, svc)
 
+	// Endpoints
+	endpoints := authendpoint.MakeServerEndpoints(svc)
+
 	// HTTPHandler
-	ae := authendpoint.MakeServerEndpoints(svc)
-	httpHandler := authtransport.NewHTTPHandler(ae)
+	httpHandler := authtransport.NewHTTPHandler(endpoints)
 
 	// Go!
 	logger.Log("transport", "HTTP", "addr", ":8081")
