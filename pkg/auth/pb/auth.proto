@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package pb;
+
+message User {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    User user = 1;
+}
+
+message RegisterRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message RegisterResponse {
+    string msg = 1;
+}
+
+service Auth {
+    rpc Login(LoginRequest) returns (LoginResponse) {}
+    rpc Register(RegisterRequest) returns (RegisterResponse) {}
+}

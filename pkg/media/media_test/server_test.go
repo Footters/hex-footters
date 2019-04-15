@@ -9,7 +9,9 @@ import (
 	"testing"
 
 	"github.com/Footters/hex-footters/pkg/media"
+	"github.com/Footters/hex-footters/pkg/media/endpoint"
 	"github.com/Footters/hex-footters/pkg/media/mocks"
+	mediahttptransport "github.com/Footters/hex-footters/pkg/media/transport/http"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
@@ -35,35 +37,30 @@ func (suite *MediaServerTestSuite) SetupTest() {
 	defer mockCtrl.Finish()
 
 	suite.svc = mocks.NewMockService(mockCtrl)
-
-	//Endpoints
-	getContentEndpoint := media.MakeGetContentEndpoint(suite.svc)
-	getAllContentsEndpoint := media.MakeGetAllContentsEndpoint(suite.svc)
-	createContentEndpoint := media.MakeCreateContentEndpoint(suite.svc)
-	toLiveContentEndpoint := media.MakeSetContentLiveEndpoint(suite.svc)
+	endpoints := endpoint.MakeServerEndpoints(suite.svc)
 
 	suite.getContent = httptransport.NewServer(
-		getContentEndpoint,
-		media.DecodeGetContentRequest,
-		media.EncodeResponse,
+		endpoints.GetContent,
+		mediahttptransport.DecodeHTTPGetContentRequest,
+		mediahttptransport.EncodeHTTPResponse,
 	)
 
 	suite.getAllContents = httptransport.NewServer(
-		getAllContentsEndpoint,
-		media.DecodeGetAllContentsRequest,
-		media.EncodeResponse,
+		endpoints.GetAllContents,
+		mediahttptransport.DecodeHTTPGetAllContentsRequest,
+		mediahttptransport.EncodeHTTPResponse,
 	)
 
 	suite.createContent = httptransport.NewServer(
-		createContentEndpoint,
-		media.DecodeCreateContentRequest,
-		media.EncodeResponse,
+		endpoints.CreateContent,
+		mediahttptransport.DecodeHTTPCreateContentRequest,
+		mediahttptransport.EncodeHTTPResponse,
 	)
 
 	suite.toLiveContent = httptransport.NewServer(
-		toLiveContentEndpoint,
-		media.DecodeSetContentLiveRequest,
-		media.EncodeResponse,
+		endpoints.SetContentToLive,
+		mediahttptransport.DecodeHTTPSetContentLiveRequest,
+		mediahttptransport.EncodeHTTPResponse,
 	)
 }
 
@@ -91,7 +88,7 @@ func (suite *MediaServerTestSuite) TestGetContent() {
 	suite.Equal("200 OK", response.Status)
 	defer response.Body.Close()
 
-	res := new(media.GetContentResponse)
+	res := new(endpoint.GetContentResponse)
 	json.NewDecoder(response.Body).Decode(res)
 
 	suite.Equal(c.URLName, res.Content.URLName, "should be the same")
@@ -126,12 +123,12 @@ func (suite *MediaServerTestSuite) TestGetAllContents() {
 	suite.Equal("200 OK", response.Status)
 
 	defer response.Body.Close()
-	res := new(media.GetAllContentResponse)
+	res := new(endpoint.GetAllContentResponse)
 	json.NewDecoder(response.Body).Decode(res)
 	suite.Len(res.Contents, 2, "Should get two elements")
 }
 func (suite *MediaServerTestSuite) TestCreateContent() {
-	cr := &media.CreateContentRequest{
+	cr := &endpoint.CreateContentRequest{
 		Content: media.Content{
 			URLName:     "sevillafc-betis",
 			Title:       "Sevilla FC vs Real Betis",
@@ -154,7 +151,7 @@ func (suite *MediaServerTestSuite) TestCreateContent() {
 	suite.Equal("200 OK", response.Status)
 
 	defer response.Body.Close()
-	res := new(media.CreateContentResponse)
+	res := new(endpoint.CreateContentResponse)
 	json.NewDecoder(response.Body).Decode(res)
 	suite.Equal("Created", res.Msg)
 }
@@ -186,7 +183,7 @@ func (suite *MediaServerTestSuite) TestToLiveContent() {
 	suite.Equal("200 OK", response.Status)
 	defer response.Body.Close()
 
-	res := new(media.GetContentResponse)
+	res := new(endpoint.GetContentResponse)
 	json.NewDecoder(response.Body).Decode(res)
 
 	suite.Equal(cu.Status, res.Content.Status, "Should be the same")

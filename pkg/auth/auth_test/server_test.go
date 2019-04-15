@@ -7,6 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/Footters/hex-footters/pkg/auth/endpoint"
+	"github.com/Footters/hex-footters/pkg/auth/transport"
+
 	"github.com/Footters/hex-footters/pkg/auth"
 	"github.com/Footters/hex-footters/pkg/auth/mocks"
 	httptransport "github.com/go-kit/kit/transport/http"
@@ -30,20 +33,18 @@ func (suite *UserServerTestSuite) SetupTest() {
 	defer mockCtrl.Finish()
 
 	suite.svc = mocks.NewMockService(mockCtrl)
-
-	registerEndpoint := auth.MakeRegisterEndpoint(suite.svc)
-	loginEndpoint := auth.MakeLoginEndpoint(suite.svc)
+	endpoints := endpoint.MakeServerEndpoints(suite.svc)
 
 	suite.register = httptransport.NewServer(
-		registerEndpoint,
-		auth.DecodeRegisterRequest,
-		auth.EncodeResponse,
+		endpoints.Register,
+		transport.DecodeHTTPRegisterRequest,
+		transport.EncodeHTTPResponse,
 	)
 
 	suite.login = httptransport.NewServer(
-		loginEndpoint,
-		auth.DecodeLoginRequest,
-		auth.EncodeResponse,
+		endpoints.Login,
+		transport.DecodeHTTPLoginRequest,
+		transport.EncodeHTTPResponse,
 	)
 }
 
@@ -64,7 +65,7 @@ func (suite *UserServerTestSuite) TestRegister() {
 	suite.Equal("200 OK", response.Status)
 
 	defer response.Body.Close()
-	result := new(auth.RegisterResponse)
+	result := new(endpoint.RegisterResponse)
 	json.NewDecoder(response.Body).Decode(result)
 
 	suite.Equal("Register OK", result.Msg)
@@ -87,7 +88,7 @@ func (suite *UserServerTestSuite) TestLogin() {
 	suite.Equal("200 OK", response.Status)
 
 	defer response.Body.Close()
-	result := new(auth.LoginResponse)
+	result := new(endpoint.LoginResponse)
 	json.NewDecoder(response.Body).Decode(result)
 
 	suite.Equal("david@lcarrascal.com", result.User.Email)
