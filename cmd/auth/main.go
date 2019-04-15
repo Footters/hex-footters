@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"net"
 	"net/http"
 	"os"
 
 	"github.com/go-kit/kit/log"
+	"github.com/soheilhy/cmux"
 	"google.golang.org/grpc"
 
 	"github.com/Footters/hex-footters/pkg/auth"
@@ -29,19 +31,33 @@ func main() {
 	// Endpoints
 	endpoints := authendpoint.MakeServerEndpoints(svc)
 
-	// HTTPHandler
-	httpHandler := authtransport.NewHTTPHandler(endpoints)
-	// Go HTTP!
-	logger.Log("transport", "HTTP", "addr", ":8081")
-	logger.Log("exit", http.ListenAndServe(":8081", httpHandler))
+	// Create the main listener.
+	l, err := net.Listen("tcp", ":8081")
+	if err != nil {
+		logger.Log("Err listen", err)
+	}
 
-	// GRPCHandler
+	// Setup cmux
+	m := cmux.New(l)
+	grpcL := m.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
+	httpL := m.Match(cmux.HTTP1Fast())
+
+	// HTTPServer
+	httpHandler := authtransport.NewHTTPHandler(endpoints)
+	httpS := &http.Server{
+		Handler: httpHandler,
+	}
+
+	// GRPCServer
 	ctx := context.Background()
 	grpcHandler := authtransport.NewGRPCHandler(ctx, endpoints)
-	grpc := grpc.NewServer()
-	pb.RegisterAuthServer(grpc, grpcHandler)
+	grpcS := grpc.NewServer()
+	pb.RegisterAuthServer(grpcS, grpcHandler)
 
-	// Go GRPC!
-	logger.Log("transport", "HTTP", "addr", ":8082")
-	logger.Log("exit", http.ListenAndServe(":8082", grpc))
+	// Using the muxed listeners for servers.
+	go grpcS.Serve(grpcL)
+	go httpS.Serve(httpL)
+
+	// Start serving!
+	m.Serve()
 }

@@ -21,6 +21,7 @@ require (
 	github.com/mattn/go-isatty v0.0.7 // indirect
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a // indirect
+	github.com/soheilhy/cmux v0.1.4
 	github.com/src-d/proteus v1.3.3 // indirect
 	github.com/stretchr/testify v1.3.0
 	google.golang.org/grpc v1.19.0
