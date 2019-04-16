@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/Footters/hex-footters/pkg/media"
 	mediaendpoint "github.com/Footters/hex-footters/pkg/media/endpoint"
+	"github.com/Footters/hex-footters/pkg/media/provider/auth"
 	"github.com/Footters/hex-footters/pkg/media/provider/google"
 	"github.com/Footters/hex-footters/pkg/media/storage/mysqldb"
 	mediahttptransport "github.com/Footters/hex-footters/pkg/media/transport/http"
@@ -31,8 +34,18 @@ func main() {
 	mSvc := media.NewService(mRepo, mProv)
 	mSvc = media.NewLogginMiddleware(logger, mSvc)
 
+	// Auth service provider
+	grpcConn := auth.NewAuthServiceProviderConnection()
+	defer func() {
+		err := grpcConn.Close()
+		if err != nil {
+			fmt.Println("ConnectionError", err)
+		}
+	}()
+	asp := auth.NewServiceProvider(context.Background(), grpcConn)
+
 	// Endpoints
-	endpoints := mediaendpoint.MakeServerEndpoints(mSvc)
+	endpoints := mediaendpoint.MakeServerEndpoints(mSvc, asp)
 
 	// HTTPHandler
 	httpHandler := mediahttptransport.NewHTTPHandler(endpoints)
