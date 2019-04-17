@@ -39,11 +39,11 @@ services:
       - "3000:3000"
     depends_on:
       - db
+      - auth
   auth:
     image: auth:latest
     ports:
       - "8081:8081"
-      - "8082:8082"
     depends_on:
       - redis
 # Names our volume

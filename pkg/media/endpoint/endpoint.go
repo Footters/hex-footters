@@ -2,6 +2,7 @@ package endpoint
 
 import (
 	"github.com/Footters/hex-footters/pkg/media"
+	"github.com/Footters/hex-footters/pkg/media/provider/auth"
 	"github.com/go-kit/kit/endpoint"
 )
 
@@ -14,9 +15,9 @@ type Endpoints struct {
 }
 
 // MakeServerEndpoints returns service Endoints
-func MakeServerEndpoints(svc media.Service) Endpoints {
+func MakeServerEndpoints(svc media.Service, asp auth.ServiceProvider) Endpoints {
 
-	getContentEndpoint := MakeGetContentEndpoint(svc)
+	getContentEndpoint := MakeGetContentEndpoint(svc, asp)
 	getAllContentsEndpoint := MakeGetAllContentsEndpoint(svc)
 	createContentEndpoint := MakeCreateContentEndpoint(svc)
 	setToLiveContentEndpoint := MakeSetContentLiveEndpoint(svc)

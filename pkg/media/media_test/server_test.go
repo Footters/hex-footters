@@ -25,6 +25,7 @@ func TestMediaServerSuite(t *testing.T) {
 type MediaServerTestSuite struct {
 	suite.Suite
 	svc *mocks.MockService
+	asp *mocks.MockServiceProvider
 
 	getContent     *httptransport.Server
 	getAllContents *httptransport.Server
@@ -37,7 +38,9 @@ func (suite *MediaServerTestSuite) SetupTest() {
 	defer mockCtrl.Finish()
 
 	suite.svc = mocks.NewMockService(mockCtrl)
-	endpoints := endpoint.MakeServerEndpoints(suite.svc)
+	suite.asp = mocks.NewMockServiceProvider(mockCtrl)
+
+	endpoints := endpoint.MakeServerEndpoints(suite.svc, suite.asp)
 
 	suite.getContent = httptransport.NewServer(
 		endpoints.GetContent,
@@ -74,6 +77,7 @@ func (suite *MediaServerTestSuite) TestGetContent() {
 		Visible:     1,
 	}
 	suite.svc.EXPECT().FindContentByID(c.ID).Return(c, nil)
+	suite.asp.EXPECT().Login().Return("davidl@carrascal.com", nil)
 
 	vars := map[string]string{
 		"id": strconv.Itoa(int(c.ID)),

@@ -16,5 +16,5 @@ RUN GOOS=linux go build -o auth cmd/auth/main.go
 FROM alpine
 WORKDIR /app
 COPY --from=build-env /go/src/github.com/Footters/hex-footters /app/
-EXPOSE 8081 8082
+EXPOSE 8081
 ENTRYPOINT ./auth

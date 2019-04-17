@@ -12,9 +12,9 @@ import (
 
 	"github.com/Footters/hex-footters/pkg/auth"
 	authendpoint "github.com/Footters/hex-footters/pkg/auth/endpoint"
-	"github.com/Footters/hex-footters/pkg/auth/pb"
 	"github.com/Footters/hex-footters/pkg/auth/storage/redisdb"
 	authtransport "github.com/Footters/hex-footters/pkg/auth/transport"
+	"github.com/Footters/hex-footters/pkg/pb"
 )
 
 func main() {
@@ -39,8 +39,9 @@ func main() {
 
 	// Setup cmux
 	m := cmux.New(l)
-	grpcL := m.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
+
 	httpL := m.Match(cmux.HTTP1Fast())
+	grpcL := m.Match(cmux.Any())
 
 	// HTTPServer
 	httpHandler := authtransport.NewHTTPHandler(endpoints)
@@ -51,6 +52,7 @@ func main() {
 	// GRPCServer
 	ctx := context.Background()
 	grpcHandler := authtransport.NewGRPCHandler(ctx, endpoints)
+
 	grpcS := grpc.NewServer()
 	pb.RegisterAuthServer(grpcS, grpcHandler)
 
