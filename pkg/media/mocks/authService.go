@@ -34,11 +34,12 @@ func (m *MockServiceProvider) EXPECT() *MockServiceProviderMockRecorder {
 }
 
 // Login mocks base method
-func (m *MockServiceProvider) Login() string {
+func (m *MockServiceProvider) Login() (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Login")
 	ret0, _ := ret[0].(string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Login indicates an expected call of Login

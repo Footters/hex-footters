@@ -77,7 +77,7 @@ func (suite *MediaServerTestSuite) TestGetContent() {
 		Visible:     1,
 	}
 	suite.svc.EXPECT().FindContentByID(c.ID).Return(c, nil)
-	suite.asp.EXPECT().Login().Return("davidl@carrascal.com")
+	suite.asp.EXPECT().Login().Return("davidl@carrascal.com", nil)
 
 	vars := map[string]string{
 		"id": strconv.Itoa(int(c.ID)),

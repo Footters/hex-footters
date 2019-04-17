@@ -2,15 +2,14 @@ package auth
 
 import (
 	"context"
-	"fmt"
 
-	authService "github.com/Footters/hex-footters/pkg/auth/pb"
+	pb "github.com/Footters/hex-footters/pkg/pb"
 	"google.golang.org/grpc"
 )
 
 // ServiceProvider interface
 type ServiceProvider interface {
-	Login() string
+	Login() (string, error)
 }
 
 type serviceProvider struct {
@@ -27,16 +26,15 @@ func NewServiceProvider(ctx context.Context, conn *grpc.ClientConn) ServiceProvi
 }
 
 // Login for provider auth
-func (asp *serviceProvider) Login() string {
-	cli := authService.NewAuthClient(asp.Conn)
-	loginReq := &authService.LoginRequest{
-		Email:    "davidl@carrascal.com",
-		Password: "secret",
+func (asp *serviceProvider) Login() (string, error) {
+	cli := pb.NewAuthClient(asp.Conn)
+	loginReq := &pb.LoginRequest{
+		Email:    "david@lcarrascal.com",
+		Password: "1",
 	}
 	svcResp, err := cli.Login(asp.Ctx, loginReq)
 	if err != nil {
-		fmt.Println("Client Err", err)
+		return "", err
 	}
-
-	return svcResp.User.Email
+	return svcResp.User.Email, nil
 }

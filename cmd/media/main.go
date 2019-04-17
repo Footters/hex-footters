@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -36,12 +35,8 @@ func main() {
 
 	// Auth service provider
 	grpcConn := auth.NewAuthServiceProviderConnection()
-	defer func() {
-		err := grpcConn.Close()
-		if err != nil {
-			fmt.Println("ConnectionError", err)
-		}
-	}()
+	defer grpcConn.Close()
+
 	asp := auth.NewServiceProvider(context.Background(), grpcConn)
 
 	// Endpoints

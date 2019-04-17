@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/Footters/hex-footters/pkg/auth/endpoint"
-	"github.com/Footters/hex-footters/pkg/auth/pb"
+	"github.com/Footters/hex-footters/pkg/pb"
 	grpctransport "github.com/go-kit/kit/transport/grpc"
 )
 

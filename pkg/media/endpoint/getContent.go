@@ -28,7 +28,12 @@ func MakeGetContentEndpoint(svc media.Service, asp auth.ServiceProvider) endpoin
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println("Calling via RPC", asp.Login())
+
+		lg, err2 := asp.Login()
+		if err2 != nil {
+			return nil, err2
+		}
+		fmt.Println("Calling via RPC =>", lg)
 		return GetContentResponse{Content: c}, nil
 	}
 }
