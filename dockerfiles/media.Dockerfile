@@ -9,7 +9,7 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 COPY . .
-# RUN CGO_ENABLED=0 go test ./pkg/media/media_test/
+RUN CGO_ENABLED=0 go test ./pkg/media/media_test/
 RUN GOOS=linux go build -o media cmd/media/main.go
 
 # Exec 
