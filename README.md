@@ -6,4 +6,4 @@ Example of microservices with Go Kit and hexagonal architecture
 - [x] Add Go Kit
 - [x] Add auth service
 - [x] Unit Tests
-- [ ] Communication between services with GRPC
+- [x] Communication between services with GRPC
