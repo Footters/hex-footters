@@ -13,7 +13,5 @@ func NewAuthServiceProviderConnection() *grpc.ClientConn {
 		fmt.Println("Error to create GRPC Dial")
 		panic(err)
 	}
-
-	fmt.Println("State connection GRPC", conn.GetState())
 	return conn
 }

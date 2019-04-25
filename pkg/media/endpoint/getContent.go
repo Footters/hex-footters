@@ -2,7 +2,6 @@ package endpoint
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Footters/hex-footters/pkg/media"
 	"github.com/Footters/hex-footters/pkg/media/provider/auth"
@@ -17,6 +16,7 @@ type GetContentRequest struct {
 // GetContentResponse struct
 type GetContentResponse struct {
 	Content *media.Content `json:"content"`
+	Email   string         `json:"email"`
 }
 
 // MakeGetContentEndpoint func
@@ -33,7 +33,6 @@ func MakeGetContentEndpoint(svc media.Service, asp auth.ServiceProvider) endpoin
 		if err2 != nil {
 			return nil, err2
 		}
-		fmt.Println("Calling via RPC =>", lg)
-		return GetContentResponse{Content: c}, nil
+		return GetContentResponse{Content: c, Email: lg}, nil
 	}
 }
