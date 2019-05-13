@@ -1,10 +1,10 @@
 # Example microservices
 
-Example of microservices with Go Kit and hexagonal architecture
+Example of microservices with Go Kit and clean architecture
 
 ## To Do
 
-- [x] Create hex structure
+- [x] Create clean structure
 - [x] Add Go Kit
 - [x] Add auth service
 - [x] Unit Tests
